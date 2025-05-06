@@ -1,0 +1,74 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id            Int               @id @default(autoincrement())
+  name          String            @unique
+  password      String
+  role          Role              @default(CLIENT)
+  depositTotal  Float             @default(0)
+  tournamentData TournamentUser[]
+}
+
+model Tournament {
+  id            Int               @id @default(autoincrement())
+  name          String
+  startDate     DateTime
+  endDate       DateTime
+  isActive      Boolean           @default(true)
+  participants  TournamentUser[]
+  prizes        TournamentPrize[]
+}
+
+  model TournamentUser {
+    id           Int        @id @default(autoincrement())
+    userId       Int
+    tournamentId Int
+    points       Int        @default(0)
+    user         User       @relation(fields: [userId], references: [id])
+    tournament   Tournament @relation(fields: [tournamentId], references: [id])
+    
+    @@unique([userId, tournamentId])
+  }
+
+model Prize {
+  id          Int         @id @default(autoincrement())
+  name        String
+  description String?
+  value       Float?      // Valor numérico si aplica (dinero, fichas, porcentaje)
+  customValue String?     // Texto personalizado: "50 giros en Sweet Bonanza"
+  type        PrizeType   @default(OTHER)
+  imageUrl    String?
+  tournaments TournamentPrize[]
+}
+
+model TournamentPrize {
+  id           Int        @id @default(autoincrement())
+  tournamentId Int
+  prizeId      Int
+  position     Int        // Posición en el torneo: 1 = primer lugar, etc.
+  tournament   Tournament @relation(fields: [tournamentId], references: [id])
+  prize        Prize      @relation(fields: [prizeId], references: [id])
+
+  @@unique([prizeId, tournamentId])
+}
+
+enum Role {
+  CLIENT
+  ADMIN
+}
+
+enum PrizeType {
+  MONEY        // Dinero real
+  CHIPS        // Fichas virtuales
+  BONUS        // Bonos con o sin rollover
+  FREE_SPINS   // Giros gratis
+  ITEM         // Productos físicos u otros
+  OTHER
+}

@@ -1,0 +1,5 @@
+# Fuerza los finales de línea a LF (modo Unix/Linux)
+* text=auto eol=lf
+
+# Archivos que deben usar CRLF (opcional, para Windows por ejemplo)
+*.bat text eol=crlf
