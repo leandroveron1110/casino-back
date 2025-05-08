@@ -17,7 +17,7 @@ import { UpdatePointsDto } from './dto/response/update-points.dto';
 import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
 import { RolesGuard } from 'src/auth/guards/roles.guard';
 import { Roles } from 'src/auth/decorators/roles.decorator';
-import { Role } from '@prisma/client';
+import { Role, Tournament } from '@prisma/client';
 
 @Controller('tournaments')
 @UseGuards(JwtAuthGuard, RolesGuard)
@@ -86,5 +86,10 @@ export class TournamentsController {
   @Put(':id/users/points/ranking')
   updatePointsAndDeposits(@Param('id', ParseIntPipe) tournamentId: number, @Body() data: { name: string; depositTotal: number; points: number }[]) {
     return this.tournamentsService.updatePointsAndDeposits(data, tournamentId);
+  }
+
+  @Put('update/:id')
+  updateTournamnet(@Param('id', ParseIntPipe) tournamentId: number, @Body() data: CreateTournamentDto){
+    return this.tournamentsService.updateTournament(tournamentId, data);
   }
 }

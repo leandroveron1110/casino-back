@@ -22,11 +22,15 @@ import { AdminSecretGuard } from 'src/auth/guards/admin-secret.guard';
 export class UserController {
   constructor(private readonly userService: UserService) {}
 
+  @Get('ping')
+  ping() {
+    return 'pong';
+  }
 
   @Post('admin')
   @UseGuards(AdminSecretGuard)
   async createAdmin(@Body() createUserDto: CreateUserDto) {
-    console.log("create admin")
+    console.log('create admin');
     return this.userService.createAdmin(createUserDto);
   }
 
@@ -35,20 +39,17 @@ export class UserController {
   @Roles(Role.ADMIN)
   @Post()
   async create(@Body() createUserDto: CreateUserDto) {
-    console.log("create user")
+    console.log('create user');
     return this.userService.create(createUserDto);
   }
 
-
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles(Role.ADMIN)
-  @Post("many")
+  @Post('many')
   async createManyUsers(@Body() createUserDto: CreateUserDto[]) {
-    console.log("create user may")
+    console.log('create user may');
     return this.userService.createManyUsers(createUserDto);
   }
-
-
 
   // Ruta para obtener todos los usuarios (solo administradores pueden ver esto)
   @UseGuards(JwtAuthGuard, RolesGuard)

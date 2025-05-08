@@ -215,4 +215,17 @@ export class TournamentsService {
 
     return { message: 'Actualización completa' };
   }
+
+
+  async updateTournament(id: number, dto: CreateTournamentDto) {
+    return this.prisma.tournament.update({
+      where: { id },
+      data: {
+        name: dto.name,
+        startDate: new Date(dto.startDate),
+        endDate: new Date(dto.endDate),
+      },
+    });
+  }
+  
 }
