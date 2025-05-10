@@ -30,7 +30,7 @@ export class UserController {
   @Post('admin')
   @UseGuards(AdminSecretGuard)
   async createAdmin(@Body() createUserDto: CreateUserDto) {
-    console.log('create admin');
+ 
     return this.userService.createAdmin(createUserDto);
   }
 
@@ -39,7 +39,6 @@ export class UserController {
   @Roles(Role.ADMIN)
   @Post()
   async create(@Body() createUserDto: CreateUserDto) {
-    console.log('create user');
     return this.userService.create(createUserDto);
   }
 

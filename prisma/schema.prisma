@@ -26,16 +26,16 @@ model Tournament {
   prizes        TournamentPrize[]
 }
 
-  model TournamentUser {
-    id           Int        @id @default(autoincrement())
-    userId       Int
-    tournamentId Int
-    points       Int        @default(0)
-    user         User       @relation(fields: [userId], references: [id])
-    tournament   Tournament @relation(fields: [tournamentId], references: [id])
-    
-    @@unique([userId, tournamentId])
-  }
+model TournamentUser {
+  id           Int        @id @default(autoincrement())
+  userId       Int
+  tournamentId Int
+  points       Int        @default(0)
+  user         User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+  tournament   Tournament @relation(fields: [tournamentId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, tournamentId])
+}
 
 model Prize {
   id          Int         @id @default(autoincrement())
@@ -53,8 +53,8 @@ model TournamentPrize {
   tournamentId Int
   prizeId      Int
   position     Int        // Posición en el torneo: 1 = primer lugar, etc.
-  tournament   Tournament @relation(fields: [tournamentId], references: [id])
-  prize        Prize      @relation(fields: [prizeId], references: [id])
+  tournament   Tournament @relation(fields: [tournamentId], references: [id], onDelete: Cascade)
+  prize        Prize      @relation(fields: [prizeId], references: [id], onDelete: Cascade)
 
   @@unique([prizeId, tournamentId])
 }
