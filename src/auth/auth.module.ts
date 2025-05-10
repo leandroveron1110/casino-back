@@ -12,7 +12,7 @@ import { UserModule } from '../user/user.module';  // Asegúrate de importar el 
     PassportModule.register({ defaultStrategy: 'jwt' }),
     JwtModule.register({
       secret: 'secretKey', // Cambia esta clave por una más segura
-      signOptions: { expiresIn: '2h' }, // El token expirará en 1 hora
+      signOptions: { expiresIn: '30d' }, // El token expirará en 1 hora
     }),
     UserModule, // Para acceder al servicio de usuarios
   ],
