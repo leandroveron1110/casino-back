@@ -19,6 +19,14 @@ export class PrizeController {
     return this.service.create(dto);
   }
 
+
+  @Roles(Role.ADMIN)
+  @Post('many')
+  createMany(@Body() dto: CreatePrizeDto[]) {
+    return this.service.createMany(dto);
+  }
+
+
   @Get()
   findAll() {
     return this.service.findAll();

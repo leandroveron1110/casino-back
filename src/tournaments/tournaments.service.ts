@@ -162,10 +162,10 @@ export class TournamentsService {
   async getAllTournamet() {
     const tournaments = await this.prisma.tournament.findMany();
 
-    return tournaments.map(t=>{
-      t.name = t.name.split("_")[0]
+    return tournaments.map((t) => {
+      t.name = t.name.split('_')[0];
       return t;
-    })
+    });
   }
 
   async updatePointsAndDeposits(
@@ -216,6 +216,37 @@ export class TournamentsService {
     return { message: 'Actualización completa' };
   }
 
+  async updateUsersPoints(
+    data: { name: string; points: number }[],
+    tournamentId: number,
+  ) {
+    for (const entry of data) {
+      const { name, points } = entry;
+
+      // Buscar usuario por nombre
+      let user = await this.prisma.user.findUnique({ where: { name } });
+
+      if (user) {
+        // Crear o actualizar participación en el torneo
+        await this.prisma.tournamentUser.upsert({
+          where: {
+            userId_tournamentId: {
+              userId: user.id,
+              tournamentId,
+            },
+          },
+          update: { points },
+          create: {
+            userId: user.id,
+            tournamentId,
+            points,
+          },
+        });
+      }
+    }
+
+    return { message: 'Actualización completa' };
+  }
 
   async updateTournament(id: number, dto: CreateTournamentDto) {
     return this.prisma.tournament.update({
@@ -227,5 +258,4 @@ export class TournamentsService {
       },
     });
   }
-  
 }

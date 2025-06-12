@@ -137,7 +137,9 @@ export class UserService {
     // Mapear torneos con ranking
     const tournamentsWithRanking = user.tournamentData.map((tournamentUser) => {
       const { tournament, points } = tournamentUser;
-      const sorted = [...tournament.participants].sort((a, b) => b.points - a.points);
+      const sorted = [...tournament.participants].sort(
+        (a, b) => b.points - a.points,
+      );
       const position = sorted.findIndex((p) => p.userId === userId) + 1;
 
       return {
@@ -189,6 +191,42 @@ export class UserService {
       const updatedUser = await this.prisma.user.update({
         where: { name },
         data: user,
+      });
+
+      return updatedUser;
+    } catch (error) {
+      throw new BadRequestException(
+        'Error al actualizar el usuario: ' + error.message,
+      );
+    }
+  }
+
+  async updateId(id: number, user: Partial<CreateUserDto>) {
+    try {
+      // Verificar si el usuario existe
+      const existingUser = await this.prisma.user.findUnique({
+        where: {
+          id: id,
+        },
+      });
+
+      if (!existingUser) {
+        throw new NotFoundException('Usuario no encontrado');
+      }
+
+      // Si la contraseña fue proporcionada, la hasheamos antes de actualizar
+      if (user.password) {
+        user.password = await bcrypt.hash(user.password, 10);
+      }
+
+      // Filtramos solo los campos definidos
+      const data = Object.fromEntries(
+        Object.entries(user).filter(([_, value]) => value !== undefined),
+      );
+
+      const updatedUser = await this.prisma.user.update({
+        where: { id },
+        data,
       });
 
       return updatedUser;

@@ -84,6 +84,11 @@ export class TournamentsController {
   }
 
   @Put(':id/users/points/ranking')
+  updateUsersPoints(@Param('id', ParseIntPipe) tournamentId: number, @Body() data: { name: string; points: number }[]) {
+    return this.tournamentsService.updateUsersPoints(data, tournamentId);
+  }
+
+  @Put(':id/users/points/ranking/deposit')
   updatePointsAndDeposits(@Param('id', ParseIntPipe) tournamentId: number, @Body() data: { name: string; depositTotal: number; points: number }[]) {
     return this.tournamentsService.updatePointsAndDeposits(data, tournamentId);
   }
